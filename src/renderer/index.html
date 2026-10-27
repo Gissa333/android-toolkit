@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8" />
+<title>Android Toolkit</title>
+<style>
+* { box-sizing: border-box; }
+body { margin:0; font-family:'Segoe UI',sans-serif; background:#1E1E1E; color:#D4D4D4; display:flex; height:100vh; }
+#sidebar { width:220px; background:#252526; padding:12px; }
+#sidebar h1 { font-size:16px; color:#007ACC; margin:8px 0 20px; }
+#sidebar button { display:block; width:100%; padding:10px; margin:4px 0; background:#333; color:#D4D4D4; border:none; border-radius:6px; cursor:pointer; text-align:right; }
+#sidebar button:hover { background:#007ACC; }
+#content { flex:1; padding:20px; overflow-y:auto; }
+.panel { background:#252526; padding:16px; border-radius:8px; margin-bottom:16px; }
+.row { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0; }
+.btn { padding:8px 14px; background:#007ACC; color:white; border:none; border-radius:6px; cursor:pointer; }
+.btn.danger { background:#D13438; }
+.device { padding:8px; background:#333; margin:4px 0; border-radius:4px; cursor:pointer; }
+.device.active { background:#007ACC; }
+#log { background:#000; padding:12px; border-radius:6px; font-family:monospace; font-size:12px; max-height:300px; overflow-y:auto; white-space:pre-wrap; }
+h2 { font-size:18px; margin:0 0 12px; }
+</style>
+</head>
+<body>
+<div id="sidebar">
+  <h1>🛠 Android Toolkit</h1>
+  <button onclick="show('adb')">📱 ADB Manager</button>
+  <button onclick="show('fastboot')">⚡ Fastboot</button>
+</div>
+<div id="content"></div>
+<script src="renderer.js"></script>
+</body>
+</html>
