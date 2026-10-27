@@ -5,13 +5,14 @@
   "author": "Gissa333",
   "main": "dist/main/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy",
+    "copy": "node -e \"const fs=require('fs');fs.cpSync('src/renderer','dist/renderer',{recursive:true})\"",
     "dist": "npm run build && electron-builder --win --publish never"
   },
   "build": {
     "appId": "com.androidtoolkit.app",
     "productName": "AndroidToolkit",
-    "files": ["dist/**/*", "node_modules/**/*"],
+    "files": ["dist/**/*", "package.json"],
     "win": { "target": ["portable"] }
   },
   "devDependencies": {
