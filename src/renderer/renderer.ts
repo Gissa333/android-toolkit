@@ -1,5 +1,4 @@
-declare const window: any;
-const api: any = window.api;
+const api: any = (window as any).api;
 let selectedAdb: string | null = null;
 let selectedFb: string | null = null;
 
@@ -8,7 +7,7 @@ function log(m: string) {
   if (e) e.textContent += `\n${m}`;
 }
 
-window.show = (page: string) => {
+(window as any).show = (page: string) => {
   const c = document.getElementById('content')!;
   if (page === 'adb') {
     c.innerHTML = `<div class="panel"><h2>📱 ADB</h2>
@@ -34,7 +33,7 @@ window.show = (page: string) => {
   }
 };
 
-window.adbRefresh = async () => {
+(window as any).adbRefresh = async () => {
   const list = await api.adb.devices();
   const d = document.getElementById('adbDevices')!;
   d.innerHTML = list.length ? '' : '<p>لا توجد أجهزة</p>';
@@ -51,29 +50,32 @@ window.adbRefresh = async () => {
   });
 };
 
-window.adbInstall = async () => {
+(window as any).adbInstall = async () => {
   if (!selectedAdb) return alert('اختر جهازاً');
   const r = await api.adb.install(selectedAdb);
   log(r.ok ? '✅ تم التثبيت' : `❌ ${r.err}`);
 };
-window.adbUninstall = async () => {
+
+(window as any).adbUninstall = async () => {
   if (!selectedAdb) return alert('اختر جهازاً');
   const p = prompt('اسم الحزمة:'); if (!p) return;
   const r = await api.adb.uninstall(selectedAdb, p);
   log(r.ok ? '✅ تم' : `❌ ${r.err}`);
 };
-window.adbReset = async () => {
+
+(window as any).adbReset = async () => {
   if (!selectedAdb) return alert('اختر جهازاً');
   if (!confirm('⚠ سيتم مسح كل البيانات')) return;
   const r = await api.adb.resetPattern(selectedAdb);
   log(r.ok ? '✅ تم' : `❌ ${r.err}`);
 };
-window.adbReboot = async () => {
+
+(window as any).adbReboot = async () => {
   if (!selectedAdb) return alert('اختر جهازاً');
   await api.adb.reboot(selectedAdb);
 };
 
-window.fbRefresh = async () => {
+(window as any).fbRefresh = async () => {
   const list = await api.fastboot.devices();
   const d = document.getElementById('fbDevices')!;
   d.innerHTML = list.length ? '' : '<p>لا توجد أجهزة</p>';
@@ -87,24 +89,28 @@ window.fbRefresh = async () => {
     d.appendChild(el);
   });
 };
-window.fbFlash = async (p: string) => {
+
+(window as any).fbFlash = async (p: string) => {
   if (!selectedFb) return alert('اختر جهازاً');
   const r = await api.fastboot.flash(selectedFb, p);
   log(r.ok ? `✅ ${p}` : `❌ ${r.err}`);
 };
-window.fbUnlock = async () => {
+
+(window as any).fbUnlock = async () => {
   if (!selectedFb) return alert('اختر جهازاً');
   await api.fastboot.unlock(selectedFb);
 };
-window.fbWipe = async () => {
+
+(window as any).fbWipe = async () => {
   if (!selectedFb) return alert('اختر جهازاً');
   if (!confirm('مسح البيانات؟')) return;
   const r = await api.fastboot.wipe(selectedFb);
   log(r.ok ? '✅' : `❌ ${r.err}`);
 };
-window.fbReboot = async () => {
+
+(window as any).fbReboot = async () => {
   if (!selectedFb) return alert('اختر جهازاً');
   await api.fastboot.reboot(selectedFb);
 };
 
-window.show('adb');
+(window as any).show('adb');
