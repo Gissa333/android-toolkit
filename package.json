@@ -1,6 +1,8 @@
 {
   "name": "android-toolkit",
   "version": "0.1.0",
+  "description": "All-in-one Android firmware & maintenance toolkit",
+  "author": "Gissa333",
   "main": "dist/main/index.js",
   "scripts": {
     "build": "tsc",
@@ -12,10 +14,8 @@
     "files": ["dist/**/*", "node_modules/**/*"],
     "win": { "target": ["portable"] }
   },
-  "dependencies": {
-    "electron": "^30.0.0"
-  },
   "devDependencies": {
+    "electron": "^30.0.0",
     "electron-builder": "^24.13.3",
     "typescript": "^5.4.0",
     "@types/node": "^20.0.0"
