@@ -1,0 +1,21 @@
+{
+  "name": "android-toolkit",
+  "version": "0.1.0",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dist": "npm run build && electron-builder --win --publish never"
+  },
+  "build": {
+    "appId": "com.androidtoolkit.app",
+    "productName": "AndroidToolkit",
+    "files": ["dist/**/*", "node_modules/**/*"],
+    "win": { "target": ["portable"] }
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3",
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0"
+  }
+}
