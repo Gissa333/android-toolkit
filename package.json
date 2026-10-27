@@ -12,8 +12,10 @@
     "files": ["dist/**/*", "node_modules/**/*"],
     "win": { "target": ["portable"] }
   },
+  "dependencies": {
+    "electron": "^30.0.0"
+  },
   "devDependencies": {
-    "electron": "^30.0.0",
     "electron-builder": "^24.13.3",
     "typescript": "^5.4.0",
     "@types/node": "^20.0.0"
