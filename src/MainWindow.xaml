@@ -15,8 +15,9 @@
                 <TextBlock Text="🛠️ Gissa333 Toolkit" FontSize="18" FontWeight="Bold" Foreground="#007ACC" Margin="0,10,0,20"/>
                 
                 <Button Content="📱 الاتصال بالأجهزة" Margin="0,5" Padding="10" Background="#333" BorderThickness="0" Click="BtnConnect_Click" Foreground="White"/>
+                <Button Content="ℹ️ معلومات الهاتف" Margin="0,5" Padding="10" Background="#007ACC" BorderThickness="0" Click="BtnGetInfo_Click" Foreground="White"/>
                 <Button Content="⚡ فحص منافذ USB" Margin="0,5" Padding="10" Background="#333" BorderThickness="0" Click="BtnUsb_Click" Foreground="White"/>
-                <Button Content="📂 اختيار ملف الفلاشة" Margin="0,5" Padding="10" Background="#007ACC" BorderThickness="0" Click="BtnLoadFirmware_Click" Foreground="White"/>
+                <Button Content="📂 اختيار ملف الفلاشة" Margin="0,5" Padding="10" Background="#333" BorderThickness="0" Click="BtnLoadFirmware_Click" Foreground="White"/>
                 
                 <TextBlock x:Name="TxtFileInfo" Text="لم يتم اختيار ملف" Foreground="#888" Margin="0,10,0,0" TextWrapping="Wrap" FontSize="12"/>
             </StackPanel>
@@ -26,12 +27,22 @@
         <Grid Grid.Column="1" Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             
-            <TextBlock Grid.Row="0" Text="لوحة التحكم والسجل" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+            <TextBlock Grid.Row="0" Text="لوحة التحكم والسجل" FontSize="24" FontWeight="Bold" Margin="0,0,0,15"/>
             
-            <ListBox Grid.Row="1" x:Name="LogList" Background="#111" Foreground="#00FF00" FontFamily="Consolas" FontSize="14" Padding="10"/>
+            <!-- Device Info Panel -->
+            <Border Grid.Row="1" Background="#2D2D30" Padding="15" Margin="0,0,0,15" CornerRadius="5" Visibility="Collapsed" x:Name="InfoPanel">
+                <StackPanel>
+                    <TextBlock x:Name="TxtModel" Text="الموديل: -" FontSize="14" Foreground="#00FF00" Margin="0,2"/>
+                    <TextBlock x:Name="TxtAndroid" Text="نظام الأندرويد: -" FontSize="14" Foreground="#00FF00" Margin="0,2"/>
+                    <TextBlock x:Name="TxtCpu" Text="المعالج: -" FontSize="14" Foreground="#00FF00" Margin="0,2"/>
+                </StackPanel>
+            </Border>
+            
+            <ListBox Grid.Row="2" x:Name="LogList" Background="#111" Foreground="#00FF00" FontFamily="Consolas" FontSize="14" Padding="10"/>
         </Grid>
     </Grid>
 </Window>
