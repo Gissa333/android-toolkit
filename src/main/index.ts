@@ -7,16 +7,14 @@ import * as https from 'https';
 import { createWriteStream } from 'fs';
 
 const execAsync = promisify(exec);
-
-// مسار تخزين الأدوات في مجلد بيانات البرنامج
 const toolsDir = path.join(app.getPath('userData'), 'bin');
 const adbPath = path.join(toolsDir, 'adb.exe');
 const fastbootPath = path.join(toolsDir, 'fastboot.exe');
 
-// دالة لتحميل الأدوات إذا لم تكن موجودة
+let mainWindow: BrowserWindow | null = null;
+
 async function ensureTools(): Promise<boolean> {
   if (fs.existsSync(adbPath) && fs.existsSync(fastbootPath)) return true;
-
   if (!fs.existsSync(toolsDir)) fs.mkdirSync(toolsDir, { recursive: true });
 
   return new Promise((resolve) => {
@@ -24,21 +22,29 @@ async function ensureTools(): Promise<boolean> {
     const zipPath = path.join(toolsDir, 'platform-tools.zip');
     const file = createWriteStream(zipPath);
 
-    dialog.showMessageBox({
-      type: 'info',
-      title: 'جاري التحميل',
-      message: 'يتم الآن تحميل أدوات ADB و Fastboot لأول مرة. قد يستغرق دقيقة...'
-    });
-
     https.get(url, (response) => {
       if (response.statusCode === 302 || response.statusCode === 301) {
         https.get(response.headers.location!, (res) => {
+          const totalSize = parseInt(res.headers['content-length'] || '0', 10);
+          let downloadedSize = 0;
+
+          res.on('data', (chunk) => {
+            downloadedSize += chunk.length;
+            if (totalSize > 0 && mainWindow) {
+              const percent = Math.round((downloadedSize / totalSize) * 100);
+              mainWindow.webContents.send('download-progress', percent);
+            }
+          });
+
           res.pipe(file);
           file.on('finish', () => {
             file.close();
-            // استخراج الملفات باستخدام PowerShell (مدمج في ويندوز)
+            if (mainWindow) mainWindow.webContents.send('download-progress', 99); // 99% أثناء فك الضغط
             const psCmd = `Expand-Archive -Path "${zipPath}" -DestinationPath "${toolsDir}" -Force; Move-Item -Path "${toolsDir}\\platform-tools\\*" -Destination "${toolsDir}" -Force; Remove-Item -Path "${toolsDir}\\platform-tools" -Recurse -Force; Remove-Item -Path "${zipPath}" -Force`;
-            exec(`powershell -Command "${psCmd}"`, () => resolve(true));
+            exec(`powershell -Command "${psCmd}"`, () => {
+              if (mainWindow) mainWindow.webContents.send('download-progress', 100);
+              resolve(true);
+            });
           });
         });
       }
@@ -58,19 +64,25 @@ function run(cmd: string, timeout = 60000): Promise<{ ok: boolean; out: string; 
 }
 
 function createWindow() {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200, height: 800, backgroundColor: '#1E1E1E',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true, nodeIntegration: false
     }
   });
-  win.loadFile(path.join(__dirname, '../renderer/index.html'));
+  mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+  mainWindow.on('closed', () => { mainWindow = null; });
 }
 
 app.whenReady().then(async () => {
-  await ensureTools(); // التأكد من تحميل الأدوات قبل فتح الواجهة
-  createWindow();
+  createWindow(); // نفتح النافذة أولاً لكي نرى شريط التحميل
+  await ensureTools(); // ثم نبدأ التحميل
+});
+
+// استقبال طلب بدء التحميل من الواجهة
+ipcMain.handle('app:startDownload', async () => {
+  return await ensureTools();
 });
 
 ipcMain.handle('adb:devices', async () => {
