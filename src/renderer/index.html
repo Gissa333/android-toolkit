@@ -2,32 +2,72 @@
 <html dir="rtl" lang="ar">
 <head>
 <meta charset="UTF-8" />
-<title>Android Toolkit</title>
+<title>Android Toolkit Pro</title>
 <style>
-* { box-sizing: border-box; }
-body { margin:0; font-family:'Segoe UI',sans-serif; background:#1E1E1E; color:#D4D4D4; display:flex; height:100vh; }
-#sidebar { width:220px; background:#252526; padding:12px; }
-#sidebar h1 { font-size:16px; color:#007ACC; margin:8px 0 20px; }
-#sidebar button { display:block; width:100%; padding:10px; margin:4px 0; background:#333; color:#D4D4D4; border:none; border-radius:6px; cursor:pointer; text-align:right; }
-#sidebar button:hover { background:#007ACC; }
-#content { flex:1; padding:20px; overflow-y:auto; }
-.panel { background:#252526; padding:16px; border-radius:8px; margin-bottom:16px; }
-.row { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0; }
-.btn { padding:8px 14px; background:#007ACC; color:white; border:none; border-radius:6px; cursor:pointer; }
-.btn.danger { background:#D13438; }
-.device { padding:8px; background:#333; margin:4px 0; border-radius:4px; cursor:pointer; }
-.device.active { background:#007ACC; }
-#log { background:#000; padding:12px; border-radius:6px; font-family:monospace; font-size:12px; max-height:300px; overflow-y:auto; white-space:pre-wrap; }
-h2 { font-size:18px; margin:0 0 12px; }
+  :root {
+    --bg-main: #1e1e1e;
+    --bg-sidebar: #252526;
+    --bg-panel: #2d2d30;
+    --text-main: #cccccc;
+    --text-muted: #858585;
+    --accent: #007acc;
+    --accent-hover: #0098ff;
+    --danger: #d13438;
+    --success: #28a745;
+  }
+  * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  body { margin: 0; background: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+  
+  /* Sidebar */
+  #sidebar { width: 250px; background: var(--bg-sidebar); border-left: 1px solid #3c3c3c; display: flex; flex-direction: column; }
+  .logo { padding: 20px; font-size: 20px; font-weight: bold; color: #fff; border-bottom: 1px solid #3c3c3c; display: flex; align-items: center; gap: 10px; }
+  .nav-btn { padding: 15px 20px; background: transparent; color: var(--text-muted); border: none; text-align: right; font-size: 15px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; border-right: 3px solid transparent; }
+  .nav-btn:hover { background: #2a2d2e; color: #fff; }
+  .nav-btn.active { background: #37373d; color: #fff; border-right-color: var(--accent); }
+  
+  /* Main Content */
+  #content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; }
+  
+  /* Cards */
+  .panel { background: var(--bg-panel); border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #3c3c3c; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+  .panel-title { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+  
+  /* Buttons */
+  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+  .btn { padding: 10px 18px; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+  .btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+  .btn.danger { background: var(--danger); }
+  .btn.danger:hover { background: #e74c3c; }
+  .btn.success { background: var(--success); }
+  
+  /* Devices List */
+  .device { padding: 12px; background: #3c3c3c; margin: 6px 0; border-radius: 6px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; display: flex; align-items: center; justify-content: space-between; }
+  .device:hover { background: #4d4d4d; }
+  .device.active { background: var(--accent); color: #fff; border-color: #0098ff; }
+  
+  /* Console / Log */
+  #log-container { background: #000; border: 1px solid #333; border-radius: 6px; padding: 15px; font-family: 'Consolas', monospace; font-size: 13px; color: #00ff00; height: 200px; overflow-y: auto; margin-top: 10px; white-space: pre-wrap; }
+  
+  /* Progress Bar */
+  .progress-container { width: 100%; height: 25px; background: #333; border-radius: 12px; overflow: hidden; margin: 20px 0; }
+  .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #007acc, #00c8ff); transition: width 0.3s; }
 </style>
 </head>
 <body>
+
 <div id="sidebar">
-  <h1>🛠 Android Toolkit</h1>
-  <button onclick="show('adb')">📱 ADB Manager</button>
-  <button onclick="show('fastboot')">⚡ Fastboot</button>
+  <div class="logo">🛠️ Android Toolkit</div>
+  <button class="nav-btn active" onclick="show('dashboard')">🏠 لوحة التحكم</button>
+  <button class="nav-btn" onclick="show('adb')">📱 إدارة ADB</button>
+  <button class="nav-btn" onclick="show('fastboot')">⚡ إدارة Fastboot</button>
+  <button class="nav-btn" onclick="show('samsung')">🔷 أدوات سامسونج</button>
+  <button class="nav-btn" onclick="show('mtk')">🔶 أدوات MediaTek</button>
 </div>
-<div id="content"></div>
+
+<div id="content">
+  <!-- المحتوى يتغير هنا ديناميكياً بواسطة renderer.ts -->
+</div>
+
 <script src="renderer.js"></script>
 </body>
 </html>
