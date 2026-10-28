@@ -1,6 +1,10 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('api', {
+  app: {
+    startDownload: () => ipcRenderer.invoke('app:startDownload'),
+    onProgress: (cb: (percent: number) => void) => ipcRenderer.on('download-progress', (_e, percent) => cb(percent))
+  },
   adb: {
     devices: () => ipcRenderer.invoke('adb:devices'),
     shell: (s: string, c: string) => ipcRenderer.invoke('adb:shell', s, c),
