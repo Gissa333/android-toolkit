@@ -1,4 +1,4 @@
-name: Build Windows EXE
+name: Build C# Android Toolkit
 on:
   push:
     branches: [main]
@@ -9,12 +9,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
-      - run: npm install
-      - run: npm run build
-      - run: npm run dist
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build Project
+        run: dotnet publish src/AndroidToolkit.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./publish
       - uses: actions/upload-artifact@v4
         with:
-          name: AndroidToolkit-Windows
-          path: dist/*.exe
+          name: Gissa333-Android-Toolkit
+          path: ./publish/AndroidToolkitPro.exe
