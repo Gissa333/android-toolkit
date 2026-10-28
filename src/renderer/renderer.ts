@@ -34,9 +34,10 @@ function log(m: string) {
 };
 
 (window as any).adbRefresh = async () => {
+  log("جارٍ البحث عن أجهزة...");
   const list = await api.adb.devices();
   const d = document.getElementById('adbDevices')!;
-  d.innerHTML = list.length ? '' : '<p>لا توجد أجهزة</p>';
+  d.innerHTML = list.length ? '' : '<p>لا توجد أجهزة متصلة</p>';
   list.forEach((x: any) => {
     const el = document.createElement('div');
     el.className = 'device';
@@ -48,37 +49,39 @@ function log(m: string) {
     };
     d.appendChild(el);
   });
+  log("تم التحديث.");
 };
 
 (window as any).adbInstall = async () => {
-  if (!selectedAdb) return alert('اختر جهازاً');
+  if (!selectedAdb) return alert('اختر جهازاً من القائمة أولاً');
   const r = await api.adb.install(selectedAdb);
   log(r.ok ? '✅ تم التثبيت' : `❌ ${r.err}`);
 };
 
 (window as any).adbUninstall = async () => {
-  if (!selectedAdb) return alert('اختر جهازاً');
-  const p = prompt('اسم الحزمة:'); if (!p) return;
+  if (!selectedAdb) return alert('اختر جهازاً أولاً');
+  const p = prompt('اسم الحزمة (مثال: com.facebook.katana):'); if (!p) return;
   const r = await api.adb.uninstall(selectedAdb, p);
-  log(r.ok ? '✅ تم' : `❌ ${r.err}`);
+  log(r.ok ? '✅ تم الإزالة' : `❌ ${r.err}`);
 };
 
 (window as any).adbReset = async () => {
-  if (!selectedAdb) return alert('اختر جهازاً');
-  if (!confirm('⚠ سيتم مسح كل البيانات')) return;
+  if (!selectedAdb) return alert('اختر جهازاً أولاً');
+  if (!confirm('⚠ سيتم مسح كل البيانات! متابعة؟')) return;
   const r = await api.adb.resetPattern(selectedAdb);
-  log(r.ok ? '✅ تم' : `❌ ${r.err}`);
+  log(r.ok ? '✅ تم فتح النمط' : `❌ ${r.err}`);
 };
 
 (window as any).adbReboot = async () => {
-  if (!selectedAdb) return alert('اختر جهازاً');
+  if (!selectedAdb) return alert('اختر جهازاً أولاً');
   await api.adb.reboot(selectedAdb);
 };
 
 (window as any).fbRefresh = async () => {
+  log("جارٍ البحث في Fastboot...");
   const list = await api.fastboot.devices();
   const d = document.getElementById('fbDevices')!;
-  d.innerHTML = list.length ? '' : '<p>لا توجد أجهزة</p>';
+  d.innerHTML = list.length ? '' : '<p>لا توجد أجهزة في وضع Fastboot</p>';
   list.forEach((s: string) => {
     const el = document.createElement('div');
     el.className = 'device'; el.textContent = s;
@@ -88,29 +91,31 @@ function log(m: string) {
     };
     d.appendChild(el);
   });
+  log("تم التحديث.");
 };
 
 (window as any).fbFlash = async (p: string) => {
-  if (!selectedFb) return alert('اختر جهازاً');
+  if (!selectedFb) return alert('اختر جهازاً أولاً');
   const r = await api.fastboot.flash(selectedFb, p);
-  log(r.ok ? `✅ ${p}` : `❌ ${r.err}`);
+  log(r.ok ? `✅ تم تفليش ${p}` : `❌ ${r.err}`);
 };
 
 (window as any).fbUnlock = async () => {
-  if (!selectedFb) return alert('اختر جهازاً');
+  if (!selectedFb) return alert('اختر جهازاً أولاً');
   await api.fastboot.unlock(selectedFb);
 };
 
 (window as any).fbWipe = async () => {
-  if (!selectedFb) return alert('اختر جهازاً');
+  if (!selectedFb) return alert('اختر جهازاً أولاً');
   if (!confirm('مسح البيانات؟')) return;
   const r = await api.fastboot.wipe(selectedFb);
-  log(r.ok ? '✅' : `❌ ${r.err}`);
+  log(r.ok ? '✅ تم المسح' : `❌ ${r.err}`);
 };
 
 (window as any).fbReboot = async () => {
-  if (!selectedFb) return alert('اختر جهازاً');
+  if (!selectedFb) return alert('اختر جهازاً أولاً');
   await api.fastboot.reboot(selectedFb);
 };
 
+// فتح صفحة ADB افتراضياً
 (window as any).show('adb');
