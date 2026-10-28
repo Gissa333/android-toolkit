@@ -1,0 +1,32 @@
+<Window x:Class="Gissa333.AndroidToolkit.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Gissa333 Android Toolkit" Height="700" Width="1100"
+        Background="#1E1E1E" Foreground="#D4D4D4" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <StackPanel Grid.Column="0" Background="#252526" Padding="10">
+            <TextBlock Text="🛠️ Gissa333 Toolkit" FontSize="18" FontWeight="Bold" Foreground="#007ACC" Margin="0,10,0,20"/>
+            <Button Content="📱 الاتصال بالأجهزة" Margin="0,5" Padding="10" Background="#333" BorderThickness="0" Click="BtnConnect_Click"/>
+            <Button Content="⚡ فحص منافذ USB" Margin="0,5" Padding="10" Background="#333" BorderThickness="0" Click="BtnUsb_Click"/>
+            <Button Content="🔓 فتح Bootloader" Margin="0,5" Padding="10" Background="#333" BorderThickness="0"/>
+        </StackPanel>
+
+        <!-- Main Content -->
+        <Grid Grid.Column="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Grid.Row="0" Text="لوحة التحكم" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+            
+            <ListBox Grid.Row="1" x:Name="LogList" Background="#111" Foreground="#00FF00" FontFamily="Consolas" FontSize="14" Padding="10"/>
+        </Grid>
+    </Grid>
+</Window>
