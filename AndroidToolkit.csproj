@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>AndroidToolkitPro</AssemblyName>
+    <RootNamespace>Gissa333.AndroidToolkit</RootNamespace>
+  </PropertyGroup>
+</Project>
