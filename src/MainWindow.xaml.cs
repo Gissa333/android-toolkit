@@ -1,6 +1,8 @@
 using System;
 using System.Management;
 using System.Windows;
+using Microsoft.Win32;
+using System.IO;
 
 namespace Gissa333.AndroidToolkit
 {
@@ -23,32 +25,22 @@ namespace Gissa333.AndroidToolkit
         {
             LogList.Items.Clear();
             Log("جارٍ فحص منافذ USB للبحث عن أجهزة الأندرويد...");
-            
             try
             {
-                // البحث عن أي أجهزة متصلة بمنافذ COM باستخدام مكتبة النظام
                 using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%'"))
                 {
                     var ports = searcher.Get();
                     bool found = false;
-
                     foreach (var port in ports)
                     {
                         string name = port["Caption"]?.ToString() ?? "";
                         Log($"✅ تم العثور على جهاز: {name}");
                         found = true;
                     }
-
-                    if (!found)
-                    {
-                        Log("❌ لم يتم العثور على أي منافذ COM. تأكد من توصيل الهاتف في وضع EDL/BROM.");
-                    }
+                    if (!found) Log("❌ لم يتم العثور على أي منافذ COM.");
                 }
             }
-            catch (Exception ex)
-            {
-                Log($"❌ حدث خطأ أثناء الفحص: {ex.Message}");
-            }
+            catch (Exception ex) { Log($"❌ حدث خطأ: {ex.Message}"); }
         }
 
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
@@ -60,11 +52,7 @@ namespace Gissa333.AndroidToolkit
                 {
                     StartInfo = new System.Diagnostics.ProcessStartInfo
                     {
-                        FileName = "adb",
-                        Arguments = "devices",
-                        RedirectStandardOutput = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
+                        FileName = "adb", Arguments = "devices", RedirectStandardOutput = true, UseShellExecute = false, CreateNoWindow = true
                     }
                 };
                 process.Start();
@@ -72,9 +60,25 @@ namespace Gissa333.AndroidToolkit
                 process.WaitForExit();
                 Log("نتيجة الفحص:\n" + output);
             }
-            catch
+            catch { Log("⚠️ أداة ADB غير مثبتة في النظام."); }
+        }
+
+        private void BtnLoadFirmware_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Flash Files (*.tar.md5;*.tgz;*.zip;*.bin)|*.tar.md5;*.tgz;*.zip;*.bin|All Files (*.*)|*.*";
+            openFileDialog.Title = "اختر ملف الفلاشة (Firmware)";
+
+            if (openFileDialog.ShowDialog() == true)
             {
-                Log("⚠️ لم يتم العثور على أداة ADB في النظام. (سيتم دمجها في التحديث القادم).");
+                string filePath = openFileDialog.FileName;
+                FileInfo fileInfo = new FileInfo(filePath);
+                double sizeInMB = fileInfo.Length / (1024.0 * 1024.0);
+
+                TxtFileInfo.Text = $"📄 {fileInfo.Name}\nالحجم: {sizeInMB:F2} MB";
+                Log($"✅ تم تحميل ملف: {fileInfo.Name}");
+                Log($"🔍 الحجم: {sizeInMB:F2} ميجابايت");
+                Log("💡 الملف جاهز للتحليل.");
             }
         }
     }
