@@ -10,12 +10,14 @@
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar -->
-        <StackPanel Grid.Column="0" Background="#252526" Padding="10">
-            <TextBlock Text="🛠️ Gissa333 Toolkit" FontSize="18" FontWeight="Bold" Foreground="#007ACC" Margin="0,10,0,20"/>
-            <Button Content="📱 الاتصال بالأجهزة" Margin="0,5" Padding="10" Background="#333" BorderThickness="0" Click="BtnConnect_Click"/>
-            <Button Content="⚡ فحص منافذ USB" Margin="0,5" Padding="10" Background="#333" BorderThickness="0" Click="BtnUsb_Click"/>
-            <Button Content="🔓 فتح Bootloader" Margin="0,5" Padding="10" Background="#333" BorderThickness="0"/>
-        </StackPanel>
+        <Border Grid.Column="0" Background="#252526" Padding="10">
+            <StackPanel>
+                <TextBlock Text="🛠️ Gissa333 Toolkit" FontSize="18" FontWeight="Bold" Foreground="#007ACC" Margin="0,10,0,20"/>
+                <Button Content="📱 الاتصال بالأجهزة" Margin="0,5" Padding="10" Background="#333" BorderThickness="0" Click="BtnConnect_Click" Foreground="White"/>
+                <Button Content="⚡ فحص منافذ USB" Margin="0,5" Padding="10" Background="#333" BorderThickness="0" Click="BtnUsb_Click" Foreground="White"/>
+                <Button Content="🔓 فتح Bootloader" Margin="0,5" Padding="10" Background="#333" BorderThickness="0" Foreground="White"/>
+            </StackPanel>
+        </Border>
 
         <!-- Main Content -->
         <Grid Grid.Column="1" Margin="20">
