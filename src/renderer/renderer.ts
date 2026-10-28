@@ -7,6 +7,7 @@ function log(m: string) {
   if (e) e.textContent += `\n${m}`;
 }
 
+// دالة عرض الواجهة الرئيسية
 (window as any).show = (page: string) => {
   const c = document.getElementById('content')!;
   if (page === 'adb') {
@@ -33,6 +34,7 @@ function log(m: string) {
   }
 };
 
+// أكواد أزرار ADB
 (window as any).adbRefresh = async () => {
   log("جارٍ البحث عن أجهزة...");
   const list = await api.adb.devices();
@@ -40,48 +42,36 @@ function log(m: string) {
   d.innerHTML = list.length ? '' : '<p>لا توجد أجهزة متصلة</p>';
   list.forEach((x: any) => {
     const el = document.createElement('div');
-    el.className = 'device';
-    el.textContent = `${x.serial} [${x.state}]`;
+    el.className = 'device'; el.textContent = `${x.serial} [${x.state}]`;
     el.onclick = () => {
       document.querySelectorAll('#adbDevices .device').forEach(e => e.classList.remove('active'));
-      el.classList.add('active');
-      selectedAdb = x.serial;
+      el.classList.add('active'); selectedAdb = x.serial;
     };
     d.appendChild(el);
   });
-  log("تم التحديث.");
 };
-
 (window as any).adbInstall = async () => {
-  if (!selectedAdb) return alert('اختر جهازاً من القائمة أولاً');
-  const r = await api.adb.install(selectedAdb);
-  log(r.ok ? '✅ تم التثبيت' : `❌ ${r.err}`);
+  if (!selectedAdb) return alert('اختر جهازاً');
+  const r = await api.adb.install(selectedAdb); log(r.ok ? '✅ تم التثبيت' : `❌ ${r.err}`);
 };
-
 (window as any).adbUninstall = async () => {
-  if (!selectedAdb) return alert('اختر جهازاً أولاً');
-  const p = prompt('اسم الحزمة (مثال: com.facebook.katana):'); if (!p) return;
-  const r = await api.adb.uninstall(selectedAdb, p);
-  log(r.ok ? '✅ تم الإزالة' : `❌ ${r.err}`);
+  if (!selectedAdb) return alert('اختر جهازاً');
+  const p = prompt('اسم الحزمة:'); if (!p) return;
+  const r = await api.adb.uninstall(selectedAdb, p); log(r.ok ? '✅ تم' : `❌ ${r.err}`);
 };
-
 (window as any).adbReset = async () => {
-  if (!selectedAdb) return alert('اختر جهازاً أولاً');
-  if (!confirm('⚠ سيتم مسح كل البيانات! متابعة؟')) return;
-  const r = await api.adb.resetPattern(selectedAdb);
-  log(r.ok ? '✅ تم فتح النمط' : `❌ ${r.err}`);
+  if (!selectedAdb) return alert('اختر جهازاً');
+  if (!confirm('⚠ سيتم مسح كل البيانات')) return;
+  const r = await api.adb.resetPattern(selectedAdb); log(r.ok ? '✅ تم' : `❌ ${r.err}`);
 };
+(window as any).adbReboot = async () => { if (selectedAdb) await api.adb.reboot(selectedAdb); };
 
-(window as any).adbReboot = async () => {
-  if (!selectedAdb) return alert('اختر جهازاً أولاً');
-  await api.adb.reboot(selectedAdb);
-};
-
+// أكواد أزرار Fastboot
 (window as any).fbRefresh = async () => {
-  log("جارٍ البحث في Fastboot...");
+  log("جارٍ البحث...");
   const list = await api.fastboot.devices();
   const d = document.getElementById('fbDevices')!;
-  d.innerHTML = list.length ? '' : '<p>لا توجد أجهزة في وضع Fastboot</p>';
+  d.innerHTML = list.length ? '' : '<p>لا توجد أجهزة</p>';
   list.forEach((s: string) => {
     const el = document.createElement('div');
     el.className = 'device'; el.textContent = s;
@@ -91,31 +81,48 @@ function log(m: string) {
     };
     d.appendChild(el);
   });
-  log("تم التحديث.");
 };
-
 (window as any).fbFlash = async (p: string) => {
-  if (!selectedFb) return alert('اختر جهازاً أولاً');
-  const r = await api.fastboot.flash(selectedFb, p);
-  log(r.ok ? `✅ تم تفليش ${p}` : `❌ ${r.err}`);
+  if (!selectedFb) return alert('اختر جهازاً');
+  const r = await api.fastboot.flash(selectedFb, p); log(r.ok ? `✅ ${p}` : `❌ ${r.err}`);
 };
-
-(window as any).fbUnlock = async () => {
-  if (!selectedFb) return alert('اختر جهازاً أولاً');
-  await api.fastboot.unlock(selectedFb);
-};
-
+(window as any).fbUnlock = async () => { if (selectedFb) await api.fastboot.unlock(selectedFb); };
 (window as any).fbWipe = async () => {
-  if (!selectedFb) return alert('اختر جهازاً أولاً');
+  if (!selectedFb) return alert('اختر جهازاً');
   if (!confirm('مسح البيانات؟')) return;
-  const r = await api.fastboot.wipe(selectedFb);
-  log(r.ok ? '✅ تم المسح' : `❌ ${r.err}`);
+  const r = await api.fastboot.wipe(selectedFb); log(r.ok ? '✅' : `❌ ${r.err}`);
 };
+(window as any).fbReboot = async () => { if (selectedFb) await api.fastboot.reboot(selectedFb); };
 
-(window as any).fbReboot = async () => {
-  if (!selectedFb) return alert('اختر جهازاً أولاً');
-  await api.fastboot.reboot(selectedFb);
-};
+// 🟢 تشغيل البرنامج وعرض شريط التحميل إذا لزم الأمر
+async function init() {
+  const c = document.getElementById('content')!;
+  c.innerHTML = `
+    <div class="panel" style="text-align:center; padding-top:50px;">
+      <h2 style="font-size: 22px; color: #007ACC;">⏳ جاري تحميل الأدوات اللازمة...</h2>
+      <p style="color: #888;">يرجى الانتظار، يتم تحميل أدوات ADB و Fastboot لأول مرة.</p>
+      <div style="width: 80%; margin: 20px auto; background: #333; border-radius: 10px; overflow: hidden; height: 20px;">
+        <div id="progress-bar" style="height: 100%; width: 0%; background: #007ACC; transition: width 0.3s;"></div>
+      </div>
+      <p id="progress-text" style="font-weight: bold; font-size: 18px;">0%</p>
+    </div>
+  `;
 
-// فتح صفحة ADB افتراضياً
-(window as any).show('adb');
+  // استقبال نسبة التحميل وتحديث الشريط
+  api.app.onProgress((percent: number) => {
+    const bar = document.getElementById('progress-bar');
+    const text = document.getElementById('progress-text');
+    if (bar && text) {
+      bar.style.width = `${percent}%`;
+      text.innerText = percent === 99 ? 'جاري فك الضغط...' : `${percent}%`;
+    }
+  });
+
+  // بدء التحميل
+  await api.app.startDownload();
+  
+  // بعد انتهاء التحميل، نفتح واجهة ADB
+  (window as any).show('adb');
+}
+
+init();
