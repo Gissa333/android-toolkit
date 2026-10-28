@@ -1,0 +1,22 @@
+:root {
+  --bg-main: #1e1e1e; --bg-sidebar: #252526; --bg-panel: #2d2d30;
+  --text-main: #cccccc; --text-muted: #858585; --accent: #007acc; --danger: #d13438;
+}
+* { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { margin: 0; background: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+#sidebar { width: 250px; background: var(--bg-sidebar); border-left: 1px solid #3c3c3c; display: flex; flex-direction: column; }
+.logo { padding: 20px; font-size: 20px; font-weight: bold; color: #fff; border-bottom: 1px solid #3c3c3c; text-align: center; }
+.nav-btn { padding: 15px 20px; background: transparent; color: var(--text-muted); border: none; text-align: right; font-size: 15px; cursor: pointer; transition: 0.2s; border-right: 3px solid transparent; }
+.nav-btn:hover { background: #2a2d2e; color: #fff; }
+.nav-btn.active { background: #37373d; color: #fff; border-right-color: var(--accent); }
+#content { flex: 1; padding: 30px; overflow-y: auto; }
+.panel { background: var(--bg-panel); border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #3c3c3c; }
+.panel-title { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 10px;}
+.row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+.btn { padding: 10px 18px; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s; }
+.btn:hover { opacity: 0.8; transform: translateY(-2px); }
+.btn.danger { background: var(--danger); }
+.device { padding: 12px; background: #3c3c3c; margin: 6px 0; border-radius: 6px; cursor: pointer; border: 1px solid transparent; display: flex; justify-content: space-between; }
+.device:hover { background: #4d4d4d; }
+.device.active { background: var(--accent); color: #fff; border-color: #fff; }
+#log-container { background: #000; border: 1px solid #333; border-radius: 6px; padding: 15px; font-family: 'Consolas', monospace; font-size: 13px; color: #00ff00; height: 200px; overflow-y: auto; }
