@@ -1,5 +1,5 @@
 using System;
-using System.IO.Ports;
+using System.Management;
 using System.Windows;
 
 namespace Gissa333.AndroidToolkit
@@ -22,19 +22,32 @@ namespace Gissa333.AndroidToolkit
         private void BtnUsb_Click(object sender, RoutedEventArgs e)
         {
             LogList.Items.Clear();
-            Log("جارٍ فحص منافذ COM للبحث عن أجهزة الأندرويد...");
+            Log("جارٍ فحص منافذ USB للبحث عن أجهزة الأندرويد...");
             
-            string[] ports = SerialPort.GetPortNames();
-            if (ports.Length == 0)
+            try
             {
-                Log("❌ لم يتم العثور على أي منافذ COM. تأكد من توصيل الهاتف في وضع EDL/BROM.");
-                return;
-            }
+                // البحث عن أي أجهزة متصلة بمنافذ COM باستخدام مكتبة النظام
+                using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%'"))
+                {
+                    var ports = searcher.Get();
+                    bool found = false;
 
-            foreach (string port in ports)
+                    foreach (var port in ports)
+                    {
+                        string name = port["Caption"]?.ToString() ?? "";
+                        Log($"✅ تم العثور على جهاز: {name}");
+                        found = true;
+                    }
+
+                    if (!found)
+                    {
+                        Log("❌ لم يتم العثور على أي منافذ COM. تأكد من توصيل الهاتف في وضع EDL/BROM.");
+                    }
+                }
+            }
+            catch (Exception ex)
             {
-                Log($"✅ تم العثور على منفذ: {port}");
-                Log($"🔍 [تحليل] المنفذ {port} جاهز لاستقبال الأوامر.");
+                Log($"❌ حدث خطأ أثناء الفحص: {ex.Message}");
             }
         }
 
